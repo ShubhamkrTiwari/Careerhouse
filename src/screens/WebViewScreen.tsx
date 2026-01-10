@@ -1,18 +1,16 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, Dimensions, StatusBar, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Button, Card, Title, Paragraph, Surface } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView } from 'moti';
-import { Bell, Play, Globe, ChevronRight } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Bell, Play } from 'lucide-react-native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { requestNotificationPermissions, scheduleLocalNotification } from '../utils/notifications';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'WebView'>;
-const { width } = Dimensions.get('window');
 
 const WebViewScreen = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -44,16 +42,11 @@ const WebViewScreen = () => {
         colors={['#4c669f', '#3b5998', '#192f6a']}
         style={styles.headerGradient}
       >
-        <SafeAreaView>
-          <MotiView 
-            from={{ opacity: 0, translateY: -20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 1000 }}
-            style={styles.headerContent}
-          >
+        <SafeAreaView edges={['top']}>
+          <View style={styles.headerContent}>
             <Title style={styles.headerTitle}>Careerhouse App</Title>
             <Paragraph style={styles.headerSubtitle}>Exploring WebView & Notifications</Paragraph>
-          </MotiView>
+          </View>
         </SafeAreaView>
       </LinearGradient>
 
@@ -66,12 +59,7 @@ const WebViewScreen = () => {
           />
         </Surface>
         
-        <MotiView 
-          from={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 500 }}
-          style={styles.controlsContainer}
-        >
+        <View style={styles.controlsContainer}>
           <Card style={styles.card}>
             <Card.Content>
               <View style={styles.sectionHeader}>
@@ -113,7 +101,7 @@ const WebViewScreen = () => {
               </Button>
             </Card.Content>
           </Card>
-        </MotiView>
+        </View>
       </View>
     </View>
   );
