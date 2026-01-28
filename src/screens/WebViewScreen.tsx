@@ -1,183 +1,132 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions, StatusBar, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StatusBar, Text, ScrollView, StyleSheet, Animated } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button, Card, Title, Paragraph, Surface } from 'react-native-paper';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Bell, Play } from 'lucide-react-native';
+import * as Sentry from '@sentry/react-native';
+import { Bell, Zap, Settings as SettingsIcon, Globe } from 'lucide-react-native';
+
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { requestNotificationPermissions, scheduleLocalNotification } from '../utils/notifications';
+import ScreenHeader from '../components/ScreenHeader';
+import GlassCard from '../components/GlassCard';
+import GradientButton from '../components/GradientButton';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'WebView'>;
 
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#0f172a' },
+  scrollContent: { paddingBottom: 20 },
+  label: { color: '#94a3b8', fontSize: 10, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' },
+  sectionPadding: { paddingHorizontal: 16 },
+});
+
 const WebViewScreen = () => {
   const navigation = useNavigation<NavigationProp>();
+  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     requestNotificationPermissions();
+    Sentry.captureMessage('WebView Screen Opened', 'info');
   }, []);
 
-  const handleTriggerNotification1 = async () => {
-    await scheduleLocalNotification(
-      'Assignment Update',
-      'The first notification triggered successfully (3s)!',
-      3
-    );
-  };
-
-  const handleTriggerNotification2 = async () => {
-    await scheduleLocalNotification(
-      'Alert: New Stream',
-      'Check out the new HLS stream available now (5s)!',
-      5
-    );
+  const handleTriggerNotification = async (title: string, body: string, delay: number) => {
+    try {
+      await scheduleLocalNotification(title, body, delay);
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.headerGradient}
+      
+      <ScreenHeader 
+        title="Careerhouse" 
+        subtitle="Digital Experience Platform" 
+        rightIcon={SettingsIcon}
+        onRightPress={() => navigation.navigate('Settings')}
+      />
+
+      <ScrollView 
+        showsVerticalScrollIndicator={false} 
+        contentContainerStyle={styles.scrollContent}
       >
-        <SafeAreaView edges={['top']}>
-          <View style={styles.headerContent}>
-            <Title style={styles.headerTitle}>Careerhouse App</Title>
-            <Paragraph style={styles.headerSubtitle}>Exploring WebView & Notifications</Paragraph>
+        {/* Full Width WebView Section */}
+        <Animated.View style={{ marginBottom: 12 }}>
+          <View style={{ paddingHorizontal: 16, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Globe size={14} color="#64748b" />
+            <Text style={styles.label}>Live Preview</Text>
           </View>
-        </SafeAreaView>
-      </LinearGradient>
-
-      <View style={styles.contentContainer}>
-        <Surface style={styles.webViewSurface} elevation={4}>
-          <WebView 
-            source={{ uri: 'https://expo.dev' }} 
-            style={styles.webView}
-            startInLoadingState={true}
-          />
-        </Surface>
-        
-        <View style={styles.controlsContainer}>
-          <Card style={styles.card}>
-            <Card.Content>
-              <View style={styles.sectionHeader}>
-                <Bell size={20} color="#3b5998" />
-                <Title style={styles.sectionTitle}>Interactive Notifications</Title>
+          
+          <GlassCard style={{ height: 340 }}>
+            {isLoading && (
+              <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+                <View 
+                  style={{ height: 6, backgroundColor: '#3b82f6', shadowColor: '#3b82f6', shadowOpacity: 0.5, shadowRadius: 8, width: `${progress * 100}%` }} 
+                />
               </View>
-              <View style={styles.buttonRow}>
-                <Button 
-                  mode="contained" 
-                  onPress={handleTriggerNotification1}
-                  style={styles.notifyButton}
-                  buttonColor="#3b5998"
-                  icon={({ size, color }) => <Bell size={size} color={color} />}
-                >
-                  3s Delay
-                </Button>
+            )}
+            <WebView 
+              source={{ uri: 'https://expo.dev' }} 
+              style={{ flex: 1, opacity: 0.95 }}
+              onLoadProgress={({ nativeEvent }) => setProgress(nativeEvent.progress)}
+              onLoadStart={() => setIsLoading(true)}
+              onLoadEnd={() => setIsLoading(false)}
+            />
+          </GlassCard>
+        </Animated.View>
 
-                <Button 
-                  mode="contained" 
-                  onPress={handleTriggerNotification2}
-                  style={styles.notifyButton}
-                  buttonColor="#4c669f"
-                  icon={({ size, color }) => <Bell size={size} color={color} />}
-                >
-                  5s Delay
-                </Button>
+        {/* Action Controls Section */}
+        <View style={styles.sectionPadding}>
+          <Text style={[styles.label, { paddingHorizontal: 8, marginBottom: 10 }]}>
+            Interaction Center
+          </Text>
+          
+          <GlassCard style={{ paddingVertical: 16, paddingHorizontal: 16, marginBottom: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+              <View style={{ padding: 12, borderRadius: 16, backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 1, borderColor: 'rgba(59, 130, 246, 0.2)' }}>
+                <Bell size={18} color="#3b82f6" />
               </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }}>Push Console</Text>
+                <Text style={{ color: '#94a3b8', fontSize: 12, marginTop: 2 }}>Instant notification testing</Text>
+              </View>
+            </View>
 
-              <Button 
-                mode="elevated" 
-                onPress={() => navigation.navigate('VideoPlayer')}
-                style={styles.videoButton}
-                textColor="#fff"
-                buttonColor="#34C759"
-                contentStyle={styles.videoButtonContent}
-                icon={({ size, color }) => <Play size={size} color={color} fill={color} />}
-              >
-                Launch Video Player
-              </Button>
-            </Card.Content>
-          </Card>
+            <View style={{ gap: 10 }}>
+              <GradientButton
+                title="Quick Alert (3s)"
+                icon={Zap}
+                onPress={() => handleTriggerNotification('🎯 Assignment Update', 'First notification (3s)!', 3)}
+              />
+              
+              <GradientButton
+                title="Stream Update (5s)"
+                icon={Bell}
+                colors={['#06b6d4', '#0891b2']}
+                onPress={() => handleTriggerNotification('🎬 Stream Update', 'New HLS stream (5s)!', 5)}
+              />
+            </View>
+          </GlassCard>
+
+          <Animated.View>
+            <GlassCard style={{ paddingVertical: 16, paddingHorizontal: 16, backgroundColor: 'rgba(96, 165, 250, 0.05)', borderColor: 'rgba(59, 130, 246, 0.1)' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ flex: 1, paddingRight: 16 }}>
+                  <Text style={{ color: '#60a5fa', fontWeight: '700', fontSize: 10, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>Status</Text>
+                  <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>System Online</Text>
+                </View>
+                <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#10b981', shadowColor: '#10b981', shadowOpacity: 0.5, shadowRadius: 4 }} />
+              </View>
+            </GlassCard>
+          </Animated.View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
-  headerGradient: {
-    paddingBottom: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
-  headerContent: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  headerSubtitle: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 16,
-  },
-  contentContainer: {
-    flex: 1,
-    marginTop: -20,
-    paddingHorizontal: 16,
-  },
-  webViewSurface: {
-    height: 350,
-    borderRadius: 20,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-  },
-  webView: {
-    flex: 1,
-  },
-  controlsContainer: {
-    marginTop: 20,
-  },
-  card: {
-    borderRadius: 20,
-    backgroundColor: '#fff',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    marginLeft: 10,
-    color: '#333',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  notifyButton: {
-    flex: 0.48,
-    borderRadius: 12,
-  },
-  videoButton: {
-    borderRadius: 12,
-    marginTop: 5,
-  },
-  videoButtonContent: {
-    height: 48,
-    flexDirection: 'row-reverse',
-  },
-});
 
 export default WebViewScreen;

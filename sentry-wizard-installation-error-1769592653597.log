@@ -1,0 +1,62 @@
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: react-native-css-interop@0.2.1
+npm warn Found: tailwindcss@4.1.18
+npm warn node_modules/tailwindcss
+npm warn   peer tailwindcss@">3.3.0" from nativewind@4.2.1
+npm warn   node_modules/nativewind
+npm warn     nativewind@"^4.2.1" from the root project
+npm warn   1 more (the root project)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer tailwindcss@"~3" from react-native-css-interop@0.2.1
+npm warn node_modules/react-native-css-interop
+npm warn   react-native-css-interop@"0.2.1" from nativewind@4.2.1
+npm warn   node_modules/nativewind
+npm warn
+npm warn Conflicting peer dependency: tailwindcss@3.4.19
+npm warn node_modules/tailwindcss
+npm warn   peer tailwindcss@"~3" from react-native-css-interop@0.2.1
+npm warn   node_modules/react-native-css-interop
+npm warn     react-native-css-interop@"0.2.1" from nativewind@4.2.1
+npm warn     node_modules/nativewind
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: react-test-renderer@19.2.0
+npm error Found: react@19.1.0
+npm error node_modules/react
+npm error   peer react@">=16.3.0" from @callstack/react-theme-provider@3.0.9
+npm error   node_modules/@callstack/react-theme-provider
+npm error     @callstack/react-theme-provider@"^3.0.9" from react-native-paper@5.14.5
+npm error     node_modules/react-native-paper
+npm error       react-native-paper@"^5.14.5" from the root project
+npm error   peerOptional react@"*" from @expo/devtools@0.1.8
+npm error   node_modules/@expo/devtools
+npm error     @expo/devtools@"0.1.8" from expo@54.0.31
+npm error     node_modules/expo
+npm error       peerOptional expo@"*" from @expo/metro-config@54.0.13
+npm error       node_modules/@expo/metro-config
+npm error         @expo/metro-config@"54.0.13" from expo@54.0.31
+npm error         2 more (@expo/cli, the root project)
+npm error       16 more (babel-preset-expo, expo-application, expo-av, ...)
+npm error   34 more (@react-native/new-app-screen, ...)
+npm error
+npm error Could not resolve dependency:
+npm error peer react@"^19.2.0" from react-test-renderer@19.2.0
+npm error node_modules/react-test-renderer
+npm error   dev react-test-renderer@"19.2.0" from the root project
+npm error
+npm error Conflicting peer dependency: react@19.2.4
+npm error node_modules/react
+npm error   peer react@"^19.2.0" from react-test-renderer@19.2.0
+npm error   node_modules/react-test-renderer
+npm error     dev react-test-renderer@"19.2.0" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\Hp\AppData\Local\npm-cache\_logs\2026-01-28T09_30_45_735Z-eresolve-report.txt
+npm error A complete log of this run can be found in: C:\Users\Hp\AppData\Local\npm-cache\_logs\2026-01-28T09_30_45_735Z-debug-0.log
