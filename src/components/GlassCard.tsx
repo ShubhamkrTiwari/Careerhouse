@@ -9,7 +9,7 @@ interface GlassCardProps {
   delay?: number;
 }
 
-const GlassCard = ({ children, className = '', style, delay = 0 }: GlassCardProps) => {
+const GlassCard = ({ children, className = '', style, delay: _delay = 0 }: GlassCardProps) => {
   return (
     <Animated.View style={style}>
       <Surface

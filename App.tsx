@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import './global.css';
 import AppNavigator from './src/navigation/AppNavigator';
 
 // Note: Sentry is optional for now - uncomment when you have a valid DSN
